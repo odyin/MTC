@@ -1,0 +1,47 @@
+# 布林通道突破策略 - 台指期
+name: "Bollinger_Breakout_TAIEX"
+version: "1.0"
+description: "價格突破布林上軌做多，跌破布林下軌做空，配合 ATR 動態停損"
+instrument: "TX"
+timeframe: "15m"
+
+indicators:
+  - type: bollinger
+    name: bb1
+    params:
+      period: {default: 20, min: 10, max: 40, step: 5}
+      std_dev: {default: 2.0, min: 1.5, max: 3.0, step: 0.5}
+      source: "close"
+  - type: atr
+    name: atr1
+    params:
+      period: {default: 14, min: 7, max: 28, step: 7}
+
+entry:
+  long:
+    condition: "close above bb1_upper"
+    order_type: "market"
+    contracts: 1
+  short:
+    condition: "close below bb1_lower"
+    order_type: "market"
+    contracts: 1
+
+exit:
+  stop_loss:
+    type: "points"
+    value: 120
+  take_profit:
+    type: "points"
+    value: 240
+  trailing_stop:
+    enabled: true
+    value: 80
+  time_exit:
+    enabled: true
+    time: "13:30"
+
+risk:
+  max_positions: 1
+  max_daily_loss: 350
+  session_filter: "day"

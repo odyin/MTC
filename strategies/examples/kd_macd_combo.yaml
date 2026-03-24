@@ -1,0 +1,49 @@
+# KD + MACD 組合策略 - 台指期
+name: "KD_MACD_Combo_TAIEX"
+version: "1.0"
+description: "KD 黃金交叉配合 MACD 柱狀圖方向確認進場"
+instrument: "TX"
+timeframe: "15m"
+
+indicators:
+  - type: kd
+    name: kd1
+    params:
+      k_period: {default: 9, min: 5, max: 21, step: 2}
+      k_smooth: {default: 3, min: 2, max: 5, step: 1}
+      d_smooth: {default: 3, min: 2, max: 5, step: 1}
+  - type: macd
+    name: macd1
+    params:
+      fast: {default: 12, min: 8, max: 16, step: 2}
+      slow: {default: 26, min: 20, max: 34, step: 2}
+      signal: {default: 9, min: 5, max: 12, step: 1}
+      source: "close"
+
+entry:
+  long:
+    condition: "kd1_k crosses_above kd1_d and macd1_histogram above 0"
+    order_type: "market"
+    contracts: 1
+  short:
+    condition: "kd1_k crosses_below kd1_d and macd1_histogram below 0"
+    order_type: "market"
+    contracts: 1
+
+exit:
+  stop_loss:
+    type: "points"
+    value: 100
+  take_profit:
+    type: "points"
+    value: 200
+  trailing_stop:
+    enabled: false
+  time_exit:
+    enabled: true
+    time: "13:30"
+
+risk:
+  max_positions: 1
+  max_daily_loss: 300
+  session_filter: "day"

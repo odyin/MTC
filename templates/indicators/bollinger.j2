@@ -1,0 +1,6 @@
+{# Bollinger Bands indicator snippet #}
+{# Variables: name, period_param, std_dev_param, source #}
+{{ name }}_mid = Average({{ source }}, {{ period_param }});
+{{ name }}_std = StdDev({{ source }}, {{ period_param }});
+{{ name }}_upper = {{ name }}_mid + {{ std_dev_param }} * {{ name }}_std;
+{{ name }}_lower = {{ name }}_mid - {{ std_dev_param }} * {{ name }}_std;

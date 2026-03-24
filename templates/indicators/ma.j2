@@ -1,0 +1,9 @@
+{# Moving Average indicator snippet #}
+{# Variables: name, period_param, method, source #}
+{% if method == "SMA" %}
+{{ name }} = Average({{ source }}, {{ period_param }});
+{% elif method == "EMA" %}
+{{ name }} = XAverage({{ source }}, {{ period_param }});
+{% elif method == "WMA" %}
+{{ name }} = WAverage({{ source }}, {{ period_param }});
+{% endif %}

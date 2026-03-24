@@ -1,0 +1,19 @@
+[project]
+name = "mtc"
+version = "0.1.0"
+description = "Automated MultiCharts Trading Strategy System for TAIEX Futures"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "numpy>=1.24",
+    "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.scripts]
+mtc = "src.cli:main"

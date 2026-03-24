@@ -1,0 +1,30 @@
+# MTC Global Settings
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  default_timeframe: "5m"
+
+backtest:
+  initial_capital: 1000000  # TWD
+  commission: 80            # TWD per round trip (TX)
+  slippage_ticks: 1         # ticks of slippage per trade
+  default_instrument: "TX"  # TX or MTX
+
+optimizer:
+  grid:
+    max_combinations: 10000
+    workers: -1              # -1 = all CPU cores
+  genetic:
+    population: 50
+    generations: 100
+    crossover_rate: 0.8
+    mutation_rate: 0.1
+    tournament_size: 3
+  walk_forward:
+    in_sample_ratio: 0.7
+    num_windows: 5
+
+output:
+  powerlanguage_dir: "output/powerlanguage"
+  reports_dir: "output/reports"
+  database: "output/mtc.db"

@@ -1,0 +1,7 @@
+{# KD Stochastic indicator snippet #}
+{# Variables: name, k_period_param, k_smooth_param, d_smooth_param #}
+Value1 = Lowest(Low, {{ k_period_param }});
+Value2 = Highest(High, {{ k_period_param }});
+{{ name }}_fastk = IFF(Value2 - Value1 > 0, (Close - Value1) / (Value2 - Value1) * 100, 0);
+{{ name }}_k = Average({{ name }}_fastk, {{ k_smooth_param }});
+{{ name }}_d = Average({{ name }}_k, {{ d_smooth_param }});

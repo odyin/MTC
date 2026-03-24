@@ -1,0 +1,5 @@
+{# MACD indicator snippet #}
+{# Variables: name, fast_param, slow_param, signal_param, source #}
+{{ name }}_val = MACD({{ source }}, {{ fast_param }}, {{ slow_param }});
+{{ name }}_avg = XAverage({{ name }}_val, {{ signal_param }});
+{{ name }}_hist = {{ name }}_val - {{ name }}_avg;

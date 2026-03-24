@@ -1,0 +1,48 @@
+# 雙均線交叉策略 - 台指期
+name: "MA_Cross_TAIEX"
+version: "1.0"
+description: "雙均線交叉策略 - 快線上穿慢線做多，快線下穿慢線做空"
+instrument: "TX"
+timeframe: "5m"
+
+indicators:
+  - type: ma
+    name: fast_ma
+    params:
+      period: {default: 10, min: 5, max: 50, step: 5}
+      method: "SMA"
+      source: "close"
+  - type: ma
+    name: slow_ma
+    params:
+      period: {default: 30, min: 10, max: 100, step: 10}
+      method: "SMA"
+      source: "close"
+
+entry:
+  long:
+    condition: "fast_ma crosses_above slow_ma"
+    order_type: "market"
+    contracts: 1
+  short:
+    condition: "fast_ma crosses_below slow_ma"
+    order_type: "market"
+    contracts: 1
+
+exit:
+  stop_loss:
+    type: "points"
+    value: 100
+  take_profit:
+    type: "points"
+    value: 200
+  trailing_stop:
+    enabled: false
+  time_exit:
+    enabled: true
+    time: "13:30"
+
+risk:
+  max_positions: 1
+  max_daily_loss: 300
+  session_filter: "day"
