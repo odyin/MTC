@@ -36,6 +36,15 @@ $Utf8NoBom  = New-Object System.Text.UTF8Encoding $false
 function Step($msg) { Write-Host "==> $msg" -ForegroundColor Cyan }
 function Ok($msg)   { Write-Host "    $msg" -ForegroundColor Green }
 
+# Windows PowerShell 5.1 turns any stderr output of a native program into a terminating
+# error when $ErrorActionPreference is 'Stop' and stderr is redirected. uv prints normal
+# progress messages on stderr, so quiet native calls run with 'Continue' instead.
+function Invoke-Quiet([scriptblock]$Block) {
+    $old = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try { & $Block 2>&1 | Out-Null } finally { $ErrorActionPreference = $old }
+}
+
 function Add-UserBinToPath {
     $dirs = @((Join-Path $env:USERPROFILE '.local\bin'))
     if ($env:LOCALAPPDATA) { $dirs += (Join-Path $env:LOCALAPPDATA 'Microsoft\WinGet\Links') }
@@ -306,7 +315,7 @@ if ($Uninstall) {
         $py = Get-ToolPython
         if ((Test-Path $py) -and (Test-Path $Settings)) { Step 'Removing hook from settings.json'; Invoke-Merge 'uninstall' $py }
         Step 'Uninstalling skillspector'
-        & uv tool uninstall skillspector 2>$null | Out-Null
+        Invoke-Quiet { uv tool uninstall skillspector }
     }
     Remove-Item $GuardPath -Force -ErrorAction SilentlyContinue
     Remove-Item $SkillDir -Recurse -Force -ErrorAction SilentlyContinue
@@ -336,7 +345,7 @@ Ok ("uv " + (& uv --version))
 Step "Installing skillspector (pinned to $($Rev.Substring(0,7)))"
 & uv tool install --force --python 3.12 "skillspector[mcp] @ git+https://github.com/NVIDIA/skillspector.git@$Rev"
 if ($LASTEXITCODE -ne 0) { throw 'skillspector install failed.' }
-& uv tool update-shell 2>$null | Out-Null
+Invoke-Quiet { uv tool update-shell }
 $Py = Get-ToolPython
 if (-not (Test-Path $Py)) { throw "Could not find the skillspector Python at $Py" }
 Ok (& (Join-Path (Split-Path $Py) 'skillspector.exe') --version)
