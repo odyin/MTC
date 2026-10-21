@@ -279,12 +279,17 @@ if __name__ == "__main__":
     main()
 '@
 
+# Chinese words built from code points so this file stays ASCII (PowerShell 5.1 reads BOM-less files as ANSI).
+$Scanner    = -join [char[]](0x6383, 0x63CF, 0x5668)                                       # scanner
+$ScanPhrase = -join [char[]](0x5E6B, 0x6211, 0x6383, 0x63CF, 0x4E00, 0x4E0B, 0x518D, 0x5B89, 0x88DD)  # "scan it first, then install"
+
 $ClaudeMdBlock = @"
 $MdBegin
 ## Skill / plugin installs
 - Before installing any agent skill or plugin (copying into a ``skills`` folder, ``git clone``, ``claude plugin install``, etc.), run the ``skill-inspector`` skill on its source first.
 - Proceed only on ``APPROVE``; on ``CAUTION`` ask the user; on ``REJECT`` do not install.
 - ``~/.claude/hooks/skill-install-guard.py`` enforces this as a PreToolUse hook (SkillSpector ``DO_NOT_INSTALL`` = deny, ``CAUTION`` or unscannable = ask).
+- Alias: ``$Scanner`` means the ``skill-inspector`` skill. When the user says "$ScanPhrase" (or similar), run ``skill-inspector`` on the source first, report the verdict in Chinese, then install on ``APPROVE``, ask on ``CAUTION``, refuse on ``REJECT``.
 $MdEnd
 "@
 
